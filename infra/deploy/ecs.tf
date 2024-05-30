@@ -139,26 +139,26 @@ resource "aws_ecs_task_definition" "api-sys" {
         memoryReservation = 512
         user              = "api-sys-user"
         environment = [
-          {
-            name  = "DB_HOST"
-            value = aws_db_instance.main.address
-          },
-          {
-            name  = "DB_NAME"
-            value = aws_db_instance.main.db_name
-          },
-          {
-            name  = "DB_USER"
-            value = aws_db_instance.main.username
-          },
-          {
-            name  = "DB_PASS"
-            value = aws_db_instance.main.password
-          },
-          {
-            name  = "ALLOWED_HOSTS"
-            value = "*"
-          }
+          # {
+          #   name  = "DB_HOST"
+          #   value = aws_db_instance.main.address
+          # },
+          # {
+          #   name  = "DB_NAME"
+          #   value = aws_db_instance.main.db_name
+          # },
+          # {
+          #   name  = "DB_USER"
+          #   value = aws_db_instance.main.username
+          # },
+          # {
+          #   name  = "DB_PASS"
+          #   value = aws_db_instance.main.password
+          # },
+          # {
+          #   name  = "ALLOWED_HOSTS"
+          #   value = "*"
+          # }
         ]
         mountPoints = [
           {
