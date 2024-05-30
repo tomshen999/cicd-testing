@@ -13,8 +13,8 @@ COPY . .
 
 EXPOSE 5050
 
-VOLUME /vol/web/media
-VOLUME /vol/web/static
+# VOLUME /vol/web/media
+# VOLUME /vol/web/static
 
 CMD npm config set prefer-offline true && \
     # npx wait-port ot-pg-write:5432 && \
