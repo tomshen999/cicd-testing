@@ -138,6 +138,12 @@ resource "aws_ecs_task_definition" "api-sys" {
         essential         = true
         memoryReservation = 512
         user              = "api-sys-user"
+        portMappings = [
+          {
+            containerPort = 5050
+            hostPort      = 5050
+          }
+        ]
         environment = [
           # {
           #   name  = "DB_HOST"
@@ -227,7 +233,7 @@ resource "aws_ecs_service" "api-sys" {
 
   load_balancer {
     target_group_arn = aws_lb_target_group.api-sys.arn
-    container_name   = "${local.prefix}-api-sys"
+    container_name   = "api-sys"
     container_port   = 5050
   }
 }
