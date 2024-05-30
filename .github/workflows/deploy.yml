@@ -36,8 +36,12 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         run: |
           aws ecr get-login-password --region ap-southeast-1 | docker login --username AWS --password-stdin ${{ vars.AWS_ACCOUNT_ID }}.dkr.ecr.ap-southeast-1.amazonaws.com
-          docker build -f ./ot-api-sys/Dockerfile --compress -t ${{ vars.ECR_REPO_API_SYS }}:$GITHUB_SHA .
+          cd infra/ot-api-sys/
+          docker build --compress -t ${{ vars.ECR_REPO_API_SYS }}:$GITHUB_SHA .
           docker push ${{ vars.ECR_REPO_API_SYS }}:$GITHUB_SHA
+          cd infra/ot-api-app/
+          docker build --compress -t ${{ vars.ECR_REPO_API_APP }}:$GITHUB_SHA .
+          docker push ${{ vars.ECR_REPO_API_APP }}:$GITHUB_SHA
 
       - name: Terraform Apply
         env:
