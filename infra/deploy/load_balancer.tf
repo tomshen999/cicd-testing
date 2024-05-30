@@ -33,7 +33,14 @@ resource "aws_security_group" "lb" {
     from_port   = 5051
     to_port     = 5051
     cidr_blocks = ["0.0.0.0/0"]
-  }  
+  }
+
+  ingress {
+    protocol    = "tcp"
+    from_port   = 5488
+    to_port     = 5488
+    cidr_blocks = ["0.0.0.0/0"]
+  }
 
   egress {
     protocol    = "tcp"
@@ -49,12 +56,12 @@ resource "aws_security_group" "lb" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  # egress {
-  #   protocol    = "tcp"
-  #   from_port   = 5488
-  #   to_port     = 5488
-  #   cidr_blocks = ["0.0.0.0/0"]
-  # }
+  egress {
+    protocol    = "tcp"
+    from_port   = 5488
+    to_port     = 5488
+    cidr_blocks = ["0.0.0.0/0"]
+  }
 
   # egress {
   #   protocol    = "tcp"
@@ -121,25 +128,25 @@ resource "aws_lb_listener" "api-app" {
 
 
 # ====================================================
-# resource "aws_lb_target_group" "report" {
-#   name        = "${local.prefix}-report"
-#   protocol    = "HTTP"
-#   vpc_id      = aws_vpc.main.id
-#   target_type = "ip"
-#   port        = 5488
+resource "aws_lb_target_group" "report" {
+  name        = "${local.prefix}-report"
+  protocol    = "HTTP"
+  vpc_id      = aws_vpc.main.id
+  target_type = "ip"
+  port        = 5488
 
-#   health_check {
-#     path = "/report/health-check/"
-#   }
-# }
+  # health_check {
+  #   path = "/report/health-check/"
+  # }
+}
 
-# resource "aws_lb_listener" "report" {
-#   load_balancer_arn = aws_lb.api.arn
-#   port              = 5488
-#   protocol          = "HTTP"
+resource "aws_lb_listener" "report" {
+  load_balancer_arn = aws_lb.api.arn
+  port              = 5488
+  protocol          = "HTTP"
 
-#   default_action {
-#     type             = "forward"
-#     target_group_arn = aws_lb_target_group.report.arn
-#   }
-# }
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.report.arn
+  }
+}

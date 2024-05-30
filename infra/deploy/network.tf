@@ -133,7 +133,14 @@ resource "aws_security_group" "endpoint_access" {
     from_port   = 5051
     to_port     = 5051
     protocol    = "tcp"
-  }  
+  }
+
+  ingress {
+    cidr_blocks = [aws_vpc.main.cidr_block]
+    from_port   = 5488
+    to_port     = 5488
+    protocol    = "tcp"
+  }
 }
 
 resource "aws_vpc_endpoint" "ecr" {

@@ -101,6 +101,17 @@ resource "aws_security_group" "ecs_service" {
     ]
   }
 
+  # 
+  egress {
+    from_port = 5488
+    to_port   = 5488
+    protocol  = "tcp"
+    cidr_blocks = [
+      aws_subnet.private_a.cidr_block,
+      aws_subnet.private_b.cidr_block,
+    ]
+  }
+
   # # HTTP inbound access
   # ingress {
   #   from_port = 8000
@@ -131,15 +142,15 @@ resource "aws_security_group" "ecs_service" {
     ]
   }
 
-  # # ot-report inbound access
-  # ingress {
-  #   from_port = 5488
-  #   to_port   = 5488
-  #   protocol  = "tcp"
-  #   security_groups = [
-  #     aws_security_group.lb.id
-  #   ]
-  # }
+  # ot-report inbound access
+  ingress {
+    from_port = 5488
+    to_port   = 5488
+    protocol  = "tcp"
+    security_groups = [
+      aws_security_group.lb.id
+    ]
+  }
 }
 
 # ======================= api-sys  =================================
