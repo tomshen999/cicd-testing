@@ -4,7 +4,7 @@ WORKDIR /app
 # RUN npm install -g nodemon
 # RUN npm install -g @nestjs/cli
 COPY package*.json ./
-RUN npm i
+RUN npm install --production
 COPY . .
 
 EXPOSE 5051

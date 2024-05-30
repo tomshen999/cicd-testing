@@ -22,9 +22,9 @@ variable "db_password" {
   description = "Password for the Terraform database"
 }
 
-variable "ecr_proxy_image" {
-  description = "Path to the ECR repo with the proxy image"
-}
+# variable "ecr_proxy_image" {
+#   description = "Path to the ECR repo with the proxy image"
+# }
 
 variable "ecr_api_sys_image" {
   description = "Path to the ECR repo with the ot-api-sys image"
@@ -34,6 +34,6 @@ variable "ecr_api_app_image" {
   description = "Path to the ECR repo with the ot-api-app image"
 }
 
-variable "ecr_report_image" {
-  description = "Path to the ECR repo with the ot-report image"
-}
+# variable "ecr_report_image" {
+#   description = "Path to the ECR repo with the ot-report image"
+# }
