@@ -2,7 +2,7 @@ FROM node:20.13.1-alpine3.18
 # FROM --platform=linux/amd64 node:20.8.1-alpine3.18
 WORKDIR /app
 # USER api-sys-user
-USER root
+USER api-sys-user
 
 RUN npm install -g @nestjs/cli
 
