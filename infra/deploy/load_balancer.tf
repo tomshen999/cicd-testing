@@ -28,12 +28,12 @@ resource "aws_security_group" "lb" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  egress {
-    protocol    = "tcp"
-    from_port   = 5051
-    to_port     = 5051
-    cidr_blocks = ["0.0.0.0/0"]
-  }
+  # egress {
+  #   protocol    = "tcp"
+  #   from_port   = 5051
+  #   to_port     = 5051
+  #   cidr_blocks = ["0.0.0.0/0"]
+  # }
 
   # egress {
   #   protocol    = "tcp"
@@ -82,28 +82,28 @@ resource "aws_lb_listener" "api-sys" {
 }
 
 # ===================== api-app ========================
-resource "aws_lb_target_group" "api-app" {
-  name        = "${local.prefix}-api-app"
-  protocol    = "HTTP"
-  vpc_id      = aws_vpc.main.id
-  target_type = "ip"
-  port        = 5051
+# resource "aws_lb_target_group" "api-app" {
+#   name        = "${local.prefix}-api-app"
+#   protocol    = "HTTP"
+#   vpc_id      = aws_vpc.main.id
+#   target_type = "ip"
+#   port        = 5051
 
-  # health_check {
-  #   path = "/api-app/health-check/"
-  # }
-}
+#   # health_check {
+#   #   path = "/api-app/health-check/"
+#   # }
+# }
 
-resource "aws_lb_listener" "api-app" {
-  load_balancer_arn = aws_lb.api.arn
-  port              = 5051
-  protocol          = "HTTP"
+# resource "aws_lb_listener" "api-app" {
+#   load_balancer_arn = aws_lb.api.arn
+#   port              = 5051
+#   protocol          = "HTTP"
 
-  default_action {
-    type             = "forward"
-    target_group_arn = aws_lb_target_group.api-app.arn
-  }
-}
+#   default_action {
+#     type             = "forward"
+#     target_group_arn = aws_lb_target_group.api-app.arn
+#   }
+# }
 
 
 # ====================================================

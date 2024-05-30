@@ -99,25 +99,25 @@ resource "aws_security_group" "ecs_service" {
     ]
   }
 
-  # ot-api-app inbound access
-  ingress {
-    from_port = 5051
-    to_port   = 5051
-    protocol  = "tcp"
-    security_groups = [
-      aws_security_group.lb.id
-    ]
-  }
+  # # ot-api-app inbound access
+  # ingress {
+  #   from_port = 5051
+  #   to_port   = 5051
+  #   protocol  = "tcp"
+  #   security_groups = [
+  #     aws_security_group.lb.id
+  #   ]
+  # }
 
-  # ot-report inbound access
-  ingress {
-    from_port = 5488
-    to_port   = 5488
-    protocol  = "tcp"
-    security_groups = [
-      aws_security_group.lb.id
-    ]
-  }
+  # # ot-report inbound access
+  # ingress {
+  #   from_port = 5488
+  #   to_port   = 5488
+  #   protocol  = "tcp"
+  #   security_groups = [
+  #     aws_security_group.lb.id
+  #   ]
+  # }
 }
 
 # ======================= api-sys  =================================
@@ -227,120 +227,120 @@ resource "aws_ecs_service" "api-sys" {
 
   load_balancer {
     target_group_arn = aws_lb_target_group.api-sys.arn
-    container_name   = "api-sys"
+    container_name   = aws_ecs_service.api-sys.name
     container_port   = 5050
   }
 }
 
 
 # ======================= api-app  =================================
-resource "aws_ecs_task_definition" "api-app" {
-  family                   = "${local.prefix}-api-app"
-  requires_compatibilities = ["FARGATE"]
-  network_mode             = "awsvpc"
-  cpu                      = 256
-  memory                   = 512
-  execution_role_arn       = aws_iam_role.task_execution_role.arn
-  task_role_arn            = aws_iam_role.app_task.arn
+# resource "aws_ecs_task_definition" "api-app" {
+#   family                   = "${local.prefix}-api-app"
+#   requires_compatibilities = ["FARGATE"]
+#   network_mode             = "awsvpc"
+#   cpu                      = 256
+#   memory                   = 512
+#   execution_role_arn       = aws_iam_role.task_execution_role.arn
+#   task_role_arn            = aws_iam_role.app_task.arn
 
-  container_definitions = jsonencode(
-    [
-      {
-        name              = "api-app"
-        image             = var.ecr_api_app_image
-        essential         = true
-        memoryReservation = 512
-        user              = "api-app-user"
-        environment = [
-          {
-            name  = "DB_HOST"
-            value = aws_db_instance.main.address
-          },
-          {
-            name  = "DB_NAME"
-            value = aws_db_instance.main.db_name
-          },
-          {
-            name  = "DB_USER"
-            value = aws_db_instance.main.username
-          },
-          {
-            name  = "DB_PASS"
-            value = aws_db_instance.main.password
-          },
-          {
-            name  = "ALLOWED_HOSTS"
-            value = "*"
-          }
-        ]
-        mountPoints = [
-          {
-            readOnly      = false
-            containerPath = "/vol/web/static"
-            sourceVolume  = "static"
-          },
-          {
-            readOnly      = false
-            containerPath = "/vol/web/media"
-            sourceVolume  = "efs-media"
-          }
-        ],
-        logConfiguration = {
-          logDriver = "awslogs"
-          options = {
-            awslogs-group         = aws_cloudwatch_log_group.ecs_task_logs.name
-            awslogs-region        = data.aws_region.current.name
-            awslogs-stream-prefix = "api-app"
-          }
-        }
-      }
-    ]
-  )
+#   container_definitions = jsonencode(
+#     [
+#       {
+#         name              = "api-app"
+#         image             = var.ecr_api_app_image
+#         essential         = true
+#         memoryReservation = 512
+#         user              = "api-app-user"
+#         environment = [
+#           {
+#             name  = "DB_HOST"
+#             value = aws_db_instance.main.address
+#           },
+#           {
+#             name  = "DB_NAME"
+#             value = aws_db_instance.main.db_name
+#           },
+#           {
+#             name  = "DB_USER"
+#             value = aws_db_instance.main.username
+#           },
+#           {
+#             name  = "DB_PASS"
+#             value = aws_db_instance.main.password
+#           },
+#           {
+#             name  = "ALLOWED_HOSTS"
+#             value = "*"
+#           }
+#         ]
+#         mountPoints = [
+#           {
+#             readOnly      = false
+#             containerPath = "/vol/web/static"
+#             sourceVolume  = "static"
+#           },
+#           {
+#             readOnly      = false
+#             containerPath = "/vol/web/media"
+#             sourceVolume  = "efs-media"
+#           }
+#         ],
+#         logConfiguration = {
+#           logDriver = "awslogs"
+#           options = {
+#             awslogs-group         = aws_cloudwatch_log_group.ecs_task_logs.name
+#             awslogs-region        = data.aws_region.current.name
+#             awslogs-stream-prefix = "api-app"
+#           }
+#         }
+#       }
+#     ]
+#   )
 
-  volume {
-    name = "static"
-  }
+#   volume {
+#     name = "static"
+#   }
 
-  volume {
-    name = "efs-media"
-    efs_volume_configuration {
-      file_system_id     = aws_efs_file_system.media.id
-      transit_encryption = "ENABLED"
+#   volume {
+#     name = "efs-media"
+#     efs_volume_configuration {
+#       file_system_id     = aws_efs_file_system.media.id
+#       transit_encryption = "ENABLED"
 
-      authorization_config {
-        access_point_id = aws_efs_access_point.media.id
-        iam             = "DISABLED"
-      }
-    }
-  }
+#       authorization_config {
+#         access_point_id = aws_efs_access_point.media.id
+#         iam             = "DISABLED"
+#       }
+#     }
+#   }
 
-  runtime_platform {
-    operating_system_family = "LINUX"
-    cpu_architecture        = "X86_64"
-  }
-}
+#   runtime_platform {
+#     operating_system_family = "LINUX"
+#     cpu_architecture        = "X86_64"
+#   }
+# }
 
-resource "aws_ecs_service" "api-app" {
-  name                   = "${local.prefix}-api-app"
-  cluster                = aws_ecs_cluster.main.name
-  task_definition        = aws_ecs_task_definition.api-app.family
-  desired_count          = 1
-  launch_type            = "FARGATE"
-  platform_version       = "1.4.0"
-  enable_execute_command = true
+# resource "aws_ecs_service" "api-app" {
+#   name                   = "${local.prefix}-api-app"
+#   cluster                = aws_ecs_cluster.main.name
+#   task_definition        = aws_ecs_task_definition.api-app.family
+#   desired_count          = 1
+#   launch_type            = "FARGATE"
+#   platform_version       = "1.4.0"
+#   enable_execute_command = true
 
-  network_configuration {
-    subnets = [
-      aws_subnet.private_a.id,
-      aws_subnet.private_b.id
-    ]
+#   network_configuration {
+#     subnets = [
+#       aws_subnet.private_a.id,
+#       aws_subnet.private_b.id
+#     ]
 
-    security_groups = [aws_security_group.ecs_service.id]
-  }
+#     security_groups = [aws_security_group.ecs_service.id]
+#   }
 
-  load_balancer {
-    target_group_arn = aws_lb_target_group.api-app.arn
-    container_name   = "api-app"
-    container_port   = 5051
-  }
-}
+#   load_balancer {
+#     target_group_arn = aws_lb_target_group.api-app.arn
+#     container_name   = aws_ecs_service.api-app.name
+#     container_port   = 5051
+#   }
+# }
