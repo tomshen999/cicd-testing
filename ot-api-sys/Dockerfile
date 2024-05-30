@@ -1,15 +1,14 @@
 FROM node:20.13.1-alpine3.18
 # FROM --platform=linux/amd64 node:20.8.1-alpine3.18
 WORKDIR /app
-# RUN npm install -g nodemon
-# RUN npm install -g @nestjs/cli
+# USER api-sys-user
+USER root
+
 COPY package*.json ./
 RUN npm install --production
 COPY . .
 
 EXPOSE 5050
-
-USER api-sys-user
 
 VOLUME /vol/web/media
 VOLUME /vol/web/static
