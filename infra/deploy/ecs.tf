@@ -110,7 +110,7 @@ resource "aws_security_group" "ecs_service" {
       aws_subnet.private_a.cidr_block,
       aws_subnet.private_b.cidr_block,
     ]
-  }
+  }  
 
   # # HTTP inbound access
   # ingress {
@@ -154,122 +154,122 @@ resource "aws_security_group" "ecs_service" {
 }
 
 # ======================= api-sys  =================================
-resource "aws_ecs_task_definition" "api-sys" {
-  family                   = "${local.prefix}-api-sys"
-  requires_compatibilities = ["FARGATE"]
-  network_mode             = "awsvpc"
-  cpu                      = 256
-  memory                   = 512
-  execution_role_arn       = aws_iam_role.task_execution_role.arn
-  task_role_arn            = aws_iam_role.app_task.arn
+# resource "aws_ecs_task_definition" "api-sys" {
+#   family                   = "${local.prefix}-api-sys"
+#   requires_compatibilities = ["FARGATE"]
+#   network_mode             = "awsvpc"
+#   cpu                      = 256
+#   memory                   = 512
+#   execution_role_arn       = aws_iam_role.task_execution_role.arn
+#   task_role_arn            = aws_iam_role.app_task.arn
 
-  container_definitions = jsonencode(
-    [
-      {
-        name              = "api-sys"
-        image             = var.ecr_api_sys_image
-        essential         = true
-        memoryReservation = 256
-        user              = "root"
-        portMappings = [
-          {
-            containerPort = 5050
-            hostPort      = 5050
-          }
-        ]
-        environment = [
-          # {
-          #   name  = "DB_HOST"
-          #   value = aws_db_instance.main.address
-          # },
-          # {
-          #   name  = "DB_NAME"
-          #   value = aws_db_instance.main.db_name
-          # },
-          # {
-          #   name  = "DB_USER"
-          #   value = aws_db_instance.main.username
-          # },
-          # {
-          #   name  = "DB_PASS"
-          #   value = aws_db_instance.main.password
-          # },
-          # {
-          #   name  = "ALLOWED_HOSTS"
-          #   value = "*"
-          # }
-        ]
-        mountPoints = [
-          {
-            readOnly      = false
-            containerPath = "/vol/web/static"
-            sourceVolume  = "static"
-          },
-          {
-            readOnly      = false
-            containerPath = "/vol/web/media"
-            sourceVolume  = "efs-media"
-          }
-        ],
-        logConfiguration = {
-          logDriver = "awslogs"
-          options = {
-            awslogs-group         = aws_cloudwatch_log_group.ecs_task_logs.name
-            awslogs-region        = data.aws_region.current.name
-            awslogs-stream-prefix = "api-sys"
-          }
-        }
-      }
-    ]
-  )
+#   container_definitions = jsonencode(
+#     [
+#       {
+#         name              = "api-sys"
+#         image             = var.ecr_api_sys_image
+#         essential         = true
+#         memoryReservation = 256
+#         user              = "root"
+#         portMappings = [
+#           {
+#             containerPort = 5050
+#             hostPort      = 5050
+#           }
+#         ]
+#         environment = [
+#           # {
+#           #   name  = "DB_HOST"
+#           #   value = aws_db_instance.main.address
+#           # },
+#           # {
+#           #   name  = "DB_NAME"
+#           #   value = aws_db_instance.main.db_name
+#           # },
+#           # {
+#           #   name  = "DB_USER"
+#           #   value = aws_db_instance.main.username
+#           # },
+#           # {
+#           #   name  = "DB_PASS"
+#           #   value = aws_db_instance.main.password
+#           # },
+#           # {
+#           #   name  = "ALLOWED_HOSTS"
+#           #   value = "*"
+#           # }
+#         ]
+#         mountPoints = [
+#           {
+#             readOnly      = false
+#             containerPath = "/vol/web/static"
+#             sourceVolume  = "static"
+#           },
+#           {
+#             readOnly      = false
+#             containerPath = "/vol/web/media"
+#             sourceVolume  = "efs-media"
+#           }
+#         ],
+#         logConfiguration = {
+#           logDriver = "awslogs"
+#           options = {
+#             awslogs-group         = aws_cloudwatch_log_group.ecs_task_logs.name
+#             awslogs-region        = data.aws_region.current.name
+#             awslogs-stream-prefix = "api-sys"
+#           }
+#         }
+#       }
+#     ]
+#   )
 
-  volume {
-    name = "static"
-  }
+#   volume {
+#     name = "static"
+#   }
 
-  volume {
-    name = "efs-media"
-    efs_volume_configuration {
-      file_system_id     = aws_efs_file_system.media.id
-      transit_encryption = "ENABLED"
+#   volume {
+#     name = "efs-media"
+#     efs_volume_configuration {
+#       file_system_id     = aws_efs_file_system.media.id
+#       transit_encryption = "ENABLED"
 
-      authorization_config {
-        access_point_id = aws_efs_access_point.media.id
-        iam             = "DISABLED"
-      }
-    }
-  }
+#       authorization_config {
+#         access_point_id = aws_efs_access_point.media.id
+#         iam             = "DISABLED"
+#       }
+#     }
+#   }
 
-  runtime_platform {
-    operating_system_family = "LINUX"
-    cpu_architecture        = "X86_64"
-  }
-}
+#   runtime_platform {
+#     operating_system_family = "LINUX"
+#     cpu_architecture        = "X86_64"
+#   }
+# }
 
-resource "aws_ecs_service" "api-sys" {
-  name                   = "${local.prefix}-api-sys"
-  cluster                = aws_ecs_cluster.main.name
-  task_definition        = aws_ecs_task_definition.api-sys.family
-  desired_count          = 1
-  launch_type            = "FARGATE"
-  platform_version       = "1.4.0"
-  enable_execute_command = true
+# resource "aws_ecs_service" "api-sys" {
+#   name                   = "${local.prefix}-api-sys"
+#   cluster                = aws_ecs_cluster.main.name
+#   task_definition        = aws_ecs_task_definition.api-sys.family
+#   desired_count          = 1
+#   launch_type            = "FARGATE"
+#   platform_version       = "1.4.0"
+#   enable_execute_command = true
 
-  network_configuration {
-    subnets = [
-      aws_subnet.private_a.id,
-      aws_subnet.private_b.id
-    ]
+#   network_configuration {
+#     subnets = [
+#       aws_subnet.private_a.id,
+#       aws_subnet.private_b.id
+#     ]
 
-    security_groups = [aws_security_group.ecs_service.id]
-  }
+#     security_groups = [aws_security_group.ecs_service.id]
+#   }
 
-  load_balancer {
-    target_group_arn = aws_lb_target_group.api-sys.arn
-    container_name   = "api-sys"
-    container_port   = 5050
-  }
-}
+#   load_balancer {
+#     target_group_arn = aws_lb_target_group.api-sys.arn
+#     container_name   = "api-sys"
+#     container_port   = 5050
+#   }
+# }
 
 
 # ======================= api-app  =================================

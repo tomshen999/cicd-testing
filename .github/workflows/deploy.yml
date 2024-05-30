@@ -39,7 +39,7 @@ jobs:
           cd ot-api-sys/
           docker build --compress -t ${{ vars.ECR_REPO_API_SYS }}:$GITHUB_SHA .
           docker push ${{ vars.ECR_REPO_API_SYS }}:$GITHUB_SHA
-          cd ../ot-api-app/
+          cd ot-api-app/
           docker build --compress -t ${{ vars.ECR_REPO_API_APP }}:$GITHUB_SHA .
           docker push ${{ vars.ECR_REPO_API_APP }}:$GITHUB_SHA
 

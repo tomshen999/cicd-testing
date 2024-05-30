@@ -24,24 +24,24 @@ resource "aws_ecr_repository" "api-app" {
   }
 }
 
-# resource "aws_ecr_repository" "report" {
-#   name                 = "ot-report"
-#   image_tag_mutability = "MUTABLE"
-#   force_delete         = true
+resource "aws_ecr_repository" "report" {
+  name                 = "ot-report"
+  image_tag_mutability = "MUTABLE"
+  force_delete         = true
 
-#   image_scanning_configuration {
-#     # NOTE: Update to true for real deployments.
-#     scan_on_push = false
-#   }
-# }
+  image_scanning_configuration {
+    # NOTE: Update to true for real deployments.
+    scan_on_push = false
+  }
+}
 
-# resource "aws_ecr_repository" "proxy" {
-#   name                 = "ot-proxy"
-#   image_tag_mutability = "MUTABLE"
-#   force_delete         = true
+resource "aws_ecr_repository" "proxy" {
+  name                 = "ot-proxy"
+  image_tag_mutability = "MUTABLE"
+  force_delete         = true
 
-#   image_scanning_configuration {
-#     # NOTE: Update to true for real deployments.
-#     scan_on_push = false
-#   }
-# }
+  image_scanning_configuration {
+    # NOTE: Update to true for real deployments.
+    scan_on_push = false
+  }
+}
