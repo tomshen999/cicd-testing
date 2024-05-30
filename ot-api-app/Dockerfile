@@ -7,7 +7,7 @@ RUN npm install -g @nestjs/cli
 
 COPY package*.json ./
 
-RUN npm install --production
+RUN npm install --omit=dev
 
 COPY . .
 
