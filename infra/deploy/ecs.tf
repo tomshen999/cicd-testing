@@ -133,10 +133,10 @@ resource "aws_ecs_task_definition" "api-sys" {
   container_definitions = jsonencode(
     [
       {
-        name              = "sys"
+        name              = "api-sys"
         image             = var.ecr_api_sys_image
         essential         = true
-        memoryReservation = 256
+        memoryReservation = 512
         user              = "api-sys-user"
         environment = [
           {
@@ -246,10 +246,10 @@ resource "aws_ecs_task_definition" "api-app" {
   container_definitions = jsonencode(
     [
       {
-        name              = "app"
+        name              = "api-app"
         image             = var.ecr_api_app_image
         essential         = true
-        memoryReservation = 256
+        memoryReservation = 512
         user              = "api-app-user"
         environment = [
           {
@@ -341,6 +341,6 @@ resource "aws_ecs_service" "api-app" {
   load_balancer {
     target_group_arn = aws_lb_target_group.api-app.arn
     container_name   = "api-app"
-    container_port   = 5050
+    container_port   = 5051
   }
 }

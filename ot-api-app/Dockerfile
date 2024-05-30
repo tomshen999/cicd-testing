@@ -8,6 +8,12 @@ RUN npm install
 COPY . .
 
 EXPOSE 5051
+
+USER api-app-user
+
+VOLUME /vol/web/media
+VOLUME /vol/web/static
+
 CMD npm config set prefer-offline true && \
     # npx wait-port ot-pg-write:5432 && \
     # npx wait-port ot-pg-read:5432 && \
