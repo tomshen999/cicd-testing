@@ -21,6 +21,20 @@ resource "aws_security_group" "lb" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
+  ingress {
+    protocol    = "tcp"
+    from_port   = 5050
+    to_port     = 5050
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    protocol    = "tcp"
+    from_port   = 5051
+    to_port     = 5051
+    cidr_blocks = ["0.0.0.0/0"]
+  }  
+
   egress {
     protocol    = "tcp"
     from_port   = 5050
@@ -28,12 +42,12 @@ resource "aws_security_group" "lb" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  # egress {
-  #   protocol    = "tcp"
-  #   from_port   = 5051
-  #   to_port     = 5051
-  #   cidr_blocks = ["0.0.0.0/0"]
-  # }
+  egress {
+    protocol    = "tcp"
+    from_port   = 5051
+    to_port     = 5051
+    cidr_blocks = ["0.0.0.0/0"]
+  }
 
   # egress {
   #   protocol    = "tcp"
