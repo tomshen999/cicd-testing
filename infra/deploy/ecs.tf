@@ -227,7 +227,7 @@ resource "aws_ecs_service" "api-sys" {
 
   load_balancer {
     target_group_arn = aws_lb_target_group.api-sys.arn
-    container_name   = aws_ecs_service.api-sys.name
+    container_name   = "${local.prefix}-api-sys"
     container_port   = 5050
   }
 }
@@ -340,7 +340,7 @@ resource "aws_ecs_service" "api-sys" {
 
 #   load_balancer {
 #     target_group_arn = aws_lb_target_group.api-app.arn
-#     container_name   = aws_ecs_service.api-app.name
+#     container_name   = "${local.prefix}-api-app"
 #     container_port   = 5051
 #   }
 # }
