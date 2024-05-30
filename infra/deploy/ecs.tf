@@ -159,7 +159,7 @@ resource "aws_ecs_task_definition" "api-sys" {
         image             = var.ecr_api_sys_image
         essential         = true
         memoryReservation = 512
-        user              = "api-sys-user"
+        user              = "root"
         portMappings = [
           {
             containerPort = 5050
