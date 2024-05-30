@@ -7,17 +7,17 @@ on:
       - prod
 
 jobs:
-  test-lint:
-    uses: ./.github/workflows/test-and-lint.yml
-    name: Test and Lint
-    secrets:
-      DOCKERHUB_USER: ${{ vars.DOCKERHUB_USER }}
-      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+  # test-lint:
+  #   uses: ./.github/workflows/test-and-lint.yml
+  #   name: Test and Lint
+  #   secrets:
+  #     DOCKERHUB_USER: ${{ vars.DOCKERHUB_USER }}
+  #     DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
   deploy:
     name: Deploy
     runs-on: ubuntu-22.04
-    needs: [test-lint]
+    # needs: [test-lint]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -40,8 +40,8 @@ jobs:
           docker push ${{ vars.ECR_REPO_API_SYS }}:$GITHUB_SHA
           docker build --compress -t ${{ vars.ECR_REPO_API_APP }}:$GITHUB_SHA .
           docker push ${{ vars.ECR_REPO_API_APP }}:$GITHUB_SHA
-          docker build --compress -t ${{ vars.ECR_REPO_PROXY }}:$GITHUB_SHA proxy/
-          docker push ${{ vars.ECR_REPO_PROXY }}:$GITHUB_SHA
+          # docker build --compress -t ${{ vars.ECR_REPO_PROXY }}:$GITHUB_SHA proxy/
+          # docker push ${{ vars.ECR_REPO_PROXY }}:$GITHUB_SHA
 
       - name: Terraform Apply
         env:

@@ -36,7 +36,7 @@ resource "aws_ecr_repository" "report" {
 }
 
 resource "aws_ecr_repository" "proxy" {
-  name                 = "ot-2024-api-proxy"
+  name                 = "ot-proxy"
   image_tag_mutability = "MUTABLE"
   force_delete         = true
 
