@@ -40,6 +40,8 @@ jobs:
           docker push ${{ vars.ECR_REPO_API_SYS }}:$GITHUB_SHA
           docker build --compress -t ${{ vars.ECR_REPO_API_APP }}:$GITHUB_SHA .
           docker push ${{ vars.ECR_REPO_API_APP }}:$GITHUB_SHA
+          # docker build --compress -t ${{ vars.ECR_REPO_PROXY }}:$GITHUB_SHA proxy/
+          # docker push ${{ vars.ECR_REPO_PROXY }}:$GITHUB_SHA
 
       - name: Terraform Apply
         env:
