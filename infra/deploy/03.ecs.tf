@@ -1,6 +1,12 @@
-##
-# ECS Cluster for running app on Fargate.
-##
+###########################################
+# ECS Cluster for running app on Fargate. #
+###########################################
+
+# 1
+resource "aws_iam_role" "task_execution_role" {
+  name               = "${local.prefix}-task-execution-role"
+  assume_role_policy = file("./templates/ecs/task-assume-role-policy.json")
+}
 
 resource "aws_iam_policy" "task_execution_role_policy" {
   name        = "${local.prefix}-task-exec-role-policy"
@@ -9,16 +15,12 @@ resource "aws_iam_policy" "task_execution_role_policy" {
   policy      = file("./templates/ecs/task-execution-role-policy.json")
 }
 
-resource "aws_iam_role" "task_execution_role" {
-  name               = "${local.prefix}-task-execution-role"
-  assume_role_policy = file("./templates/ecs/task-assume-role-policy.json")
-}
-
 resource "aws_iam_role_policy_attachment" "task_execution_role" {
   role       = aws_iam_role.task_execution_role.name
   policy_arn = aws_iam_policy.task_execution_role_policy.arn
 }
 
+# 2
 resource "aws_iam_role" "app_task" {
   name               = "${local.prefix}-app-task"
   assume_role_policy = file("./templates/ecs/task-assume-role-policy.json")
@@ -36,10 +38,12 @@ resource "aws_iam_role_policy_attachment" "task_ssm_policy" {
   policy_arn = aws_iam_policy.task_ssm_policy.arn
 }
 
+# 
 resource "aws_cloudwatch_log_group" "ecs_task_logs" {
   name = "${local.prefix}-api"
 }
 
+# 
 resource "aws_ecs_cluster" "main" {
   name = "${local.prefix}-cluster"
 }
@@ -79,7 +83,18 @@ resource "aws_security_group" "ecs_service" {
     ]
   }
 
-  # 
+  # web
+  egress {
+    from_port = 3000
+    to_port   = 3000
+    protocol  = "tcp"
+    cidr_blocks = [
+      aws_subnet.private_a.cidr_block,
+      aws_subnet.private_b.cidr_block,
+    ]
+  }
+
+  # api-sys
   egress {
     from_port = 5050
     to_port   = 5050
@@ -90,7 +105,7 @@ resource "aws_security_group" "ecs_service" {
     ]
   }
 
-  # 
+  # api-app
   egress {
     from_port = 5051
     to_port   = 5051
@@ -101,7 +116,7 @@ resource "aws_security_group" "ecs_service" {
     ]
   }
 
-  # 
+  # report
   egress {
     from_port = 5488
     to_port   = 5488
@@ -121,6 +136,16 @@ resource "aws_security_group" "ecs_service" {
   #     aws_security_group.lb.id
   #   ]
   # }
+
+  # web inbound access
+  ingress {
+    from_port = 3000
+    to_port   = 3000
+    protocol  = "tcp"
+    security_groups = [
+      aws_security_group.lb.id
+    ]
+  }
 
   # ot-api-sys inbound access
   ingress {
@@ -173,8 +198,9 @@ resource "aws_ecs_task_definition" "api-sys" {
         user              = "root"
         portMappings = [
           {
-            containerPort = 5050
             hostPort      = 5050
+            containerPort = 5050
+            protocol      = "tcp"
           }
         ]
         environment = [
@@ -292,8 +318,9 @@ resource "aws_ecs_task_definition" "api-app" {
         user              = "root"
         portMappings = [
           {
-            containerPort = 5051
             hostPort      = 5051
+            containerPort = 5051
+            protocol      = "tcp"
           }
         ]
         environment = [

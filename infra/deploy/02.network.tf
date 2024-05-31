@@ -22,6 +22,8 @@ resource "aws_internet_gateway" "main" {
 ##################################################
 # Public subnets for load balancer public access #
 ##################################################
+
+# =================== a ========================
 resource "aws_subnet" "public_a" {
   vpc_id                  = aws_vpc.main.id
   cidr_block              = "10.1.1.0/24"
@@ -52,6 +54,7 @@ resource "aws_route" "public_internet_access_a" {
   gateway_id             = aws_internet_gateway.main.id
 }
 
+# =================== b ========================
 resource "aws_subnet" "public_b" {
   vpc_id                  = aws_vpc.main.id
   cidr_block              = "10.1.2.0/24"
@@ -118,6 +121,13 @@ resource "aws_security_group" "endpoint_access" {
     cidr_blocks = [aws_vpc.main.cidr_block]
     from_port   = 443
     to_port     = 443
+    protocol    = "tcp"
+  }
+
+  ingress {
+    cidr_blocks = [aws_vpc.main.cidr_block]
+    from_port   = 3000
+    to_port     = 3000
     protocol    = "tcp"
   }
 

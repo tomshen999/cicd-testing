@@ -34,6 +34,6 @@ variable "ecr_api_app_image" {
   description = "Path to the ECR repo with the ot-api-app image"
 }
 
-# variable "ecr_report_image" {
-#   description = "Path to the ECR repo with the ot-report image"
-# }
+variable "ecr_report_image" {
+  description = "Path to the ECR repo with the ot-report image"
+}

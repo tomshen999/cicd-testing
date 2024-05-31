@@ -8,65 +8,65 @@ resource "aws_security_group" "lb" {
   vpc_id      = aws_vpc.main.id
 
   ingress {
-    protocol    = "tcp"
     from_port   = 80
     to_port     = 80
+    protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
 
   ingress {
-    protocol    = "tcp"
     from_port   = 443
     to_port     = 443
+    protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
 
   ingress {
-    protocol    = "tcp"
     from_port   = 5050
     to_port     = 5050
+    protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
 
   ingress {
-    protocol    = "tcp"
     from_port   = 5051
     to_port     = 5051
+    protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
 
   ingress {
-    protocol    = "tcp"
     from_port   = 5488
     to_port     = 5488
+    protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
 
   egress {
-    protocol    = "tcp"
     from_port   = 5050
     to_port     = 5050
+    protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
 
   egress {
-    protocol    = "tcp"
     from_port   = 5051
     to_port     = 5051
+    protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
 
   egress {
-    protocol    = "tcp"
     from_port   = 5488
     to_port     = 5488
+    protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
 
   # egress {
-  #   protocol    = "tcp"
   #   from_port   = 8000
   #   to_port     = 8000
+  #   protocol    = "tcp"
   #   cidr_blocks = ["0.0.0.0/0"]
   # }
 }
